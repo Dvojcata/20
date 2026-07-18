@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="cs" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>20 let – krásný věk 🎉</title>
+<link rel="icon" type="image/jpeg" href="ikony/20_prefinal_web.jpg">
+<link rel="apple-touch-icon" href="ikony/20_prefinal_web.jpg">
+
+<!-- ============================================================
+     "20 — Dvacítka ve vzpomínkách"  ·  varianta „Konfety"
+     Statická aplikace pro GitHub Pages. Žádný backend, žádný Gist.
+     Obsah (fotky/básničky/hudba) = statické assety v repozitáři.
+     Konvence názvů assetů viz sekce KONFIGURACE OBSAHU níže v <script>.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* === BAREVNÁ SCHÉMATA (den = light, noc = dark) ============ */
+  :root {
+    --bg-a: #F8F6FE;
+    --bg-b: #EFEAFB;
+    --surface: #ffffff;
+    --text: #241a44;
+    --text-muted: #6b6285;
+    --border: #E3DDF5;
+    --shadow: 0 8px 24px rgba(124,77,255,0.12);
+    --tile-face: #ffffff;
+    --star-display: none;      /* hvězdy jen v noci */
+
+    /* akcentní trojice – "konfety" */
+    --c1: #7C4DFF;  /* fialová */
+    --c2: #00E5FF;  /* tyrkysová */
+    --c3: #FF4081;  /* růžová */
+  }
+  html[data-theme="dark"] {
+    --bg-a: #0B0D1D;
+    --bg-b: #0B0D1D;
+    --surface: #171633;
+    --text: #EDE9FF;
+    --text-muted: #A79FD0;
+    --border: #2A2650;
+    --shadow: 0 8px 26px rgba(0,0,0,0.55);
+    --tile-face: #1B1940;
+    --star-display: block;
+  }
+
+  /* === ZÁKLAD ================================================ */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(160deg, var(--bg-a), var(--bg-b));
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.4s ease, color 0.3s ease;
+    overflow-x: hidden;
+  }
+  h1, h2, h3 { font-family: 'Baloo 2', sans-serif; }
+
+  /* === DEKORATIVNÍ POZADÍ (neinteraktivní) =================== */
+  .bg-decor {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.5;
+    animation: pulse 9s ease-in-out infinite;
+  }
+  .shape {
+    position: absolute;
+    opacity: 0.7;
+    animation: drift linear infinite;
+  }
+  .shape.star   { clip-path: polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%); }
+  .shape.diamond{ transform: rotate(45deg); border-radius: 3px; }
+  .shape.streamer { border-radius: 6px; }
+  .star-field { position: absolute; inset: 0; display: var(--star-display); }
+  .twinkle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1);   opacity: 0.40; }
+    50%     { transform: scale(1.25);opacity: 0.65; }
+  }
+  @keyframes drift {
+    0%   { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-140px) rotate(360deg); }
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0.15; }
+    50%     { opacity: 0.9; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .shape, .glow, .twinkle { animation: none !important; }
+  }
+
+  /* === HLAVIČKA ============================================= */
+  .app-header {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    padding: 14px 22px;
+    background: color-mix(in srgb, var(--surface) 80%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .brand-logo {
+    width: 104px; height: 104px;
+    border-radius: 20px;
+    background: url('./ikony/20_prefinal_web.jpg') center/cover no-repeat,
+                linear-gradient(135deg, var(--c1), var(--c3));
+    box-shadow: 0 5px 16px rgba(124,77,255,0.4);
+    flex: 0 0 auto;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .brand-logo:hover { transform: scale(1.04); }
+  .brand-logo:focus-visible { outline: 3px solid var(--c1); outline-offset: 3px; }
+  .brand-title {
+    margin: 0; font-weight: 800; line-height: 1.02;
+    font-size: clamp(2rem, 3.4vw, 3rem);
+  }
+
+  /* akce (hudba + přepínač) – na desktopu odsunuté k pravému okraji */
+  .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-left: auto; }
+
+  /* --- Ovladač hudby --- */
+  .music {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px 5px 8px;
+    box-shadow: var(--shadow);
+  }
+  .music-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px;
+    border: none; border-radius: 50%;
+    background: linear-gradient(135deg, var(--c1), var(--c3));
+    color: #fff; cursor: pointer; font-size: 14px;
+    transition: transform 0.12s ease, opacity 0.2s ease;
+  }
+  .music-btn:hover { transform: scale(1.08); }
+  /* přeskakování skladeb – bez ohraničení a pozadí */
+  .music-skip {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: none; border: none; padding: 0;
+    color: var(--text-muted); cursor: pointer;
+    width: 24px; height: 26px; font-size: 15px; line-height: 1;
+    transition: transform 0.12s ease, color 0.15s ease;
+  }
+  .music-skip:hover { color: var(--text); transform: scale(1.15); }
+  .music-skip:focus-visible { outline: 2px solid var(--c1); outline-offset: 2px; border-radius: 6px; }
+  .music[data-disabled="true"] { opacity: 0.55; }
+  .music[data-disabled="true"] .music-btn { pointer-events: none; }
+  .music-info { display: flex; align-items: center; gap: 8px; }
+  /* okno názvu skladby – pevná šířka; dlouhé názvy se posouvají (marquee) */
+  .music-name {
+    display: inline-block; width: 200px;
+    font-size: 0.925rem; color: var(--text-muted);
+    white-space: nowrap; overflow: hidden;
+  }
+  .music-name .marquee-inner { display: inline-block; white-space: nowrap; will-change: transform; }
+  .music-name.scroll .marquee-inner {
+    animation: marquee var(--dur, 8s) ease-in-out infinite alternate;
+  }
+  @keyframes marquee {
+    0%, 12%   { transform: translateX(0); }
+    88%, 100% { transform: translateX(calc(-1 * var(--shift, 0px))); }
+  }
+  /* ekvalizér */
+  .eq { display: none; align-items: flex-end; gap: 2px; height: 16px; }
+  .music[data-playing="true"] .eq { display: inline-flex; }
+  .eq span {
+    width: 3px; background: var(--c1); border-radius: 2px;
+    animation: eq 0.9s ease-in-out infinite;
+  }
+  .eq span:nth-child(1) { animation-delay: 0s;    background: var(--c1); }
+  .eq span:nth-child(2) { animation-delay: 0.25s; background: var(--c2); }
+  .eq span:nth-child(3) { animation-delay: 0.5s;  background: var(--c3); }
+  @keyframes eq { 0%,100% { height: 4px; } 50% { height: 16px; } }
+
+  /* --- Theme toggle (jedno tlačítko, cykluje Auto→Den→Noc) --- */
+  .theme-toggle {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface); color: var(--text);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 7px 14px; font: inherit; font-size: 0.85rem; line-height: 1;
+    cursor: pointer; user-select: none;
+    box-shadow: var(--shadow);
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .theme-toggle:hover { border-color: var(--c1); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--c1); outline-offset: 2px; }
+  .theme-toggle-icon { font-size: 1rem; line-height: 1; }
+  .theme-toggle-hint { color: var(--text-muted); font-size: 0.8rem; }
+  .theme-toggle[data-mode="day"]   { background: #fff7d6; color: #5a4400; border-color: #e8d27a; }
+  .theme-toggle[data-mode="night"] { background: #1B1940; color: #EDE9FF; border-color: #3A3470; }
+
+  /* === HLAVNÍ OBSAH ========================================= */
+  main {
+    position: relative; z-index: 2;
+    flex: 1; width: 100%;
+    max-width: 980px; margin: 0 auto;
+    padding: 30px 20px 40px;
+  }
+  .intro { text-align: center; margin: 4px 0 26px; }
+  .intro h2 {
+    margin: 0 0 4px; font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800;
+    background: linear-gradient(90deg, var(--c1), var(--c2), var(--c3));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .intro p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+
+  /* === MŘÍŽKA DLAŽDIC ======================================= */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 18px;
+    perspective: 1000px;
+  }
+  .tile {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    font-family: inherit; color: inherit;
+  }
+  /* vnitřní vrstva nese "nálepkové" natočení dle pozice (--rot z JS)
+     a perspektivu pro plynulé otočení (flip) samotné plochy */
+  .tile-tilt {
+    position: absolute; inset: 0;
+    transform: rotate(var(--rot, 0deg));
+    transition: transform 0.2s ease;
+    perspective: 900px;
+  }
+  .tile:hover .tile-tilt { transform: rotate(0deg) scale(1.03); }
+  .tile-face {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 28px;
+    background: var(--tile-face);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transform: rotateY(0deg);
+    transition: transform 0.28s ease;
+    backface-visibility: hidden;
+  }
+  .tile-face:focus-visible { outline: 3px solid var(--c1); outline-offset: 4px; }
+  /* flip: JS přidá .flipping – plocha se plynule otočí na hranu (90°),
+     v neviditelné fázi se vymění obsah a plocha se dotočí zpět */
+  .tile-tilt.flipping .tile-face { transform: rotateY(90deg); }
+
+  /* --- Tlačítko otočení v pravém dolním rohu --- */
+  .rotate-btn {
+    position: absolute; right: 7px; bottom: 7px; z-index: 4;
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    border: none; border-radius: 50%;
+    background: color-mix(in srgb, var(--tile-accent, var(--c1)) 82%, #ffffff);
+    color: #fff; cursor: pointer;
+    font-size: 17px; line-height: 1;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.28);
+    opacity: 0.72;
+    transition: opacity 0.15s ease, transform 0.2s ease;
+  }
+  .rotate-btn:hover { opacity: 1; transform: rotate(-90deg) scale(1.1); }
+  .rotate-btn:focus-visible { outline: 2px solid var(--c1); outline-offset: 2px; opacity: 1; }
+
+  /* --- Vrstva pro "funny" efekty (jen v ploše dlaždice) --- */
+  .fun-layer {
+    position: absolute; inset: 0; z-index: 3;
+    overflow: hidden; pointer-events: none;
+    border-radius: inherit;
+  }
+  .fun-piece { position: absolute; border-radius: 2px; will-change: transform, opacity; }
+  .fun-dot   { position: absolute; border-radius: 50%; will-change: transform, opacity; }
+  .fun-emoji { position: absolute; font-size: 30px; line-height: 1; will-change: transform; }
+  .fun-spark { position: absolute; font-size: 15px; line-height: 1; will-change: transform, opacity; }
+  .fun-flash {
+    position: absolute; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.95), rgba(255,255,255,0) 70%);
+    will-change: transform, opacity;
+  }
+
+  /* barevný přerušovaný okraj (číslo/básnička) */
+  .tile[data-state="number"] .tile-face,
+  .tile[data-state="poem"]   .tile-face {
+    border: 3px dashed var(--tile-accent);
+  }
+
+  /* --- stav ČÍSLO --- */
+  .num {
+    font-family: 'Baloo 2', sans-serif; font-weight: 800;
+    font-size: clamp(56px, 16vw, 96px); line-height: 1;
+    background: linear-gradient(135deg, var(--tile-accent), var(--tile-accent2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    transform: rotate(var(--num-rot, 0deg));
+    text-shadow: 0 6px 14px rgba(0,0,0,0.10);
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.12));
+  }
+
+  /* --- stav FOTKA (polaroid) --- */
+  .photo-wrap {
+    width: 100%; height: 100%;
+    border-radius: 18px;
+    background: var(--surface);
+    padding: 8px;
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--tile-accent) 45%, transparent);
+    transform: rotate(3deg);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .photo-wrap img {
+    width: 100%; height: 100%; object-fit: cover; border-radius: 12px; display: block;
+  }
+  .photo-missing {
+    width: 100%; height: 100%; border-radius: 12px;
+    border: 2px dashed var(--tile-accent);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px; color: var(--text-muted); font-size: 0.8rem; text-align: center; padding: 8px;
+  }
+  .photo-missing .big { font-size: 1.4rem; }
+
+  /* --- stav BÁSNIČKA --- */
+  .poem {
+    position: relative; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    transform: rotate(-2deg); padding: 6px 10px;
+  }
+  .poem-text {
+    font-family: 'Caveat', cursive; font-size: 20px; line-height: 1.25;
+    color: var(--text); white-space: pre-line; z-index: 1;
+  }
+  .poem-missing { font-family: 'Poppins', sans-serif; font-size: 0.8rem; color: var(--text-muted); }
+
+  /* nápověda o cyklení – malý indikátor stavu v rohu */
+  .state-dots {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 4px; z-index: 2;
+  }
+  .state-dots i {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--text-muted); opacity: 0.35;
+  }
+  .state-dots i.on { opacity: 1; background: var(--tile-accent); }
+
+  /* === DETAIL (lightbox – zvětšená fotka / básnička) ======= */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: center;
+    padding: 4vw;
+    background: rgba(10,8,25,0.82);
+    backdrop-filter: blur(6px);
+    animation: lbfade 0.18s ease;
+    cursor: zoom-out;
+  }
+  .lightbox[hidden] { display: none; }
+  @keyframes lbfade { from { opacity: 0; } to { opacity: 1; } }
+  .lb-photo {
+    max-width: 92vw; max-height: 88vh; width: auto; height: auto;
+    border-radius: 14px; display: block; background: #fff;
+    box-shadow: 0 14px 44px rgba(0,0,0,0.55);
+    cursor: default;
+    animation: lbpop 0.2s ease;
+  }
+  .lb-photo-missing {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    width: min(80vw, 320px); height: min(80vw, 320px);
+    border-radius: 18px; border: 3px dashed #fff;
+    color: #fff; font-size: 1rem; text-align: center; line-height: 1.5;
+    background: rgba(255,255,255,0.06);
+  }
+  .lb-poem {
+    max-width: min(94vw, 860px); max-height: 88vh; overflow: auto;
+    min-width: min(88vw, 560px); min-height: min(62vh, 460px);
+    display: flex; flex-direction: column; justify-content: center;
+    background: var(--surface); color: var(--text);
+    border-radius: 26px; padding: 52px 48px;
+    border: 3px dashed var(--tile-accent, var(--c1));
+    box-shadow: 0 14px 44px rgba(0,0,0,0.55);
+    cursor: default;
+    animation: lbpop 0.2s ease;
+  }
+  .lb-poem-text { font-family: 'Caveat', cursive; font-size: clamp(27px, 6vw, 49px); line-height: 1.4; white-space: pre-line; text-align: center; }
+  @keyframes lbpop { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+
+  /* --- Detail: obal + tlačítko otočení (fotka ↔ básnička) --- */
+  .lb-stage { position: relative; display: inline-flex; }
+  .lb-rotate {
+    position: absolute; right: 10px; bottom: 10px; z-index: 6;
+    width: 42px; height: 42px;
+    display: flex; align-items: center; justify-content: center;
+    border: none; border-radius: 50%;
+    background: color-mix(in srgb, var(--tile-accent, var(--c1)) 85%, #ffffff);
+    color: #fff; cursor: pointer; font-size: 21px; line-height: 1;
+    box-shadow: 0 3px 11px rgba(0,0,0,0.45);
+    opacity: 0.82;
+    transition: opacity 0.15s ease, transform 0.2s ease;
+  }
+  .lb-rotate:hover { opacity: 1; transform: rotate(-90deg) scale(1.1); }
+  .lb-rotate:focus-visible { outline: 2px solid #fff; outline-offset: 2px; opacity: 1; }
+
+  /* === ZÁPATÍ ============================================== */
+  .app-footer {
+    position: relative; z-index: 2;
+    padding: 14px 24px; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+  }
+
+  /* === RESPONZIVITA ======================================== */
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    main { padding: 22px 14px 32px; }
+    .music-info { max-width: 120px; }
+
+    /* --- Dvouřádková hlavička: nadpis nahoře, ovládání pod ním --- */
+    .app-header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      grid-template-areas:
+        "logo title"
+        "logo actions";
+      column-gap: 14px; row-gap: 10px;
+      align-items: center;
+      padding: 12px 16px;
+    }
+    .brand-logo { grid-area: logo; align-self: center; width: 84px; height: 84px; border-radius: 18px; }
+    .brand-title { grid-area: title; align-self: end; font-size: clamp(1.7rem, 6.8vw, 2.4rem); }
+    .header-actions {
+      grid-area: actions; align-self: start;
+      margin-left: 0; width: 100%;
+      display: flex; flex-wrap: nowrap;
+      justify-content: space-between; align-items: center; gap: 8px;
+    }
+    /* užší okno názvu, aby se ovladač na mobil vešel */
+    .music-name { width: 116px; font-size: 0.8625rem; }
+    /* přepínač stylů jen jako ikonka – bez textu auto/den/noc */
+    .theme-toggle { padding: 8px 10px; }
+    .theme-toggle-label { display: none; }
+
+    /* na mobilu dlaždice srovnané rovně – bez náklonu */
+    .tile-tilt { transform: none; }
+    .tile:hover .tile-tilt { transform: scale(1.02); }
+    .num { transform: none; }
+    .photo-wrap { transform: none; }
+    /* na mobilu bez rotace + text nepatrně nad vertikálním středem (spodní padding) */
+    .poem { transform: none; padding: 6px 10px 16px; }
+    /* básnička na mobilní dlaždici – menší písmo, aby se vešla */
+    .poem-text { font-size: 15px; line-height: 1.2; }
+
+    /* detail básničky na mobilu – užší rámeček kolem textu + trochu větší písmo */
+    .lb-poem {
+      padding: 28px 18px 40px;
+      min-width: min(94vw, 520px); max-width: min(94vw, 520px); min-height: min(50vh, 340px);
+      border-radius: 20px;
+    }
+    .lb-poem-text { font-size: clamp(34px, 8.5vw, 46px); line-height: 1.5; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Dekorativní pozadí (generováno JS) -->
+<div class="bg-decor" id="bgDecor" aria-hidden="true">
+  <div class="star-field" id="starField"></div>
+</div>
+
+<header class="app-header">
+  <div class="brand-logo" id="brandLogo" role="button" tabindex="0"
+       aria-label="Logo – 20 let (klikni pro obnovení stránky)"
+       title="Zpět na úvodní pohled (obnoví stránku)"></div>
+  <h1 class="brand-title">20 let – krásný věk 🎉</h1>
+
+  <div class="header-actions">
+    <!-- Ovladač hudby -->
+    <div class="music" id="music" data-disabled="true" data-playing="false">
+      <button class="music-btn" id="musicToggle" type="button" aria-label="Přehrát / zastavit hudbu" title="Přehrát / zastavit hudbu na pozadí">▶</button>
+      <div class="music-info">
+        <span class="eq" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="music-name" id="musicName">Hudba (doplnit)</span>
+      </div>
+      <button class="music-skip" id="musicPrev" type="button" aria-label="Předchozí skladba" title="Předchozí skladba">⏮</button>
+      <button class="music-skip" id="musicNext" type="button" aria-label="Další skladba" title="Další skladba">⏭</button>
+    </div>
+
+    <!-- Theme toggle -->
+    <button class="theme-toggle" id="themeToggle" type="button" data-mode="auto"
+            aria-label="Přepnout režim zobrazení" title="Klikni pro přepnutí režimu (Auto → Den → Noc)">
+      <span class="theme-toggle-icon" id="themeIcon" aria-hidden="true">◐</span>
+      <span class="theme-toggle-label" id="themeLabel">Auto</span>
+      <span class="theme-toggle-hint" id="themeHint">(den)</span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="grid" id="grid"><!-- dlaždice generuje JS --></div>
+</main>
+
+<!-- Detail (zvětšená fotka / básnička) – obsah plní JS -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Detail dlaždice" hidden>
+  <div class="lightbox-inner" id="lightboxInner"></div>
+</div>
+
+<footer class="app-footer">
+  (c) 2026 KeCl v1.23
+</footer>
+
+<audio id="audio" preload="none"></audio>
+
+<script>
+/* =====================================================================
+   KONFIGURACE OBSAHU  —  ZDE se doplňují reálné assety
+   ---------------------------------------------------------------------
+   Fotky:  soubory do složky ./fotky/ , pojmenované  vek-1.jpg ... vek-20.jpg
+           (funguje .jpg; pro jiný formát uprav PHOTO_EXT nebo cestu níže)
+   Básničky: doplň text do pole POEMS (index 0 = rok 1, ... index 19 = rok 20)
+   Hudba:  audio do složky ./hudba/ a přidej položky do pole TRACKS
+   ===================================================================== */
+
+  const PHOTO_DIR = './fotky/';
+  const PHOTO_EXT = '.jpg';
+  const photoSrc = (age) => `${PHOTO_DIR}vek_${age}${PHOTO_EXT}`;
+
+  // 20 básniček (prázdné = zobrazí se placeholder "doplnit básničku")
+  const POEMS = [
+    /* 1 */  "Milá sestro, mám tě rád,\npodáš mi ten špendlíček?\nPokud mi ho nepodáš,\ntak dostaneš loktíček.",
+    /* 2 */  "Ty můj malej bratříčku,\ntu máš sladké lízátko.\nJen co kmíny opálím,\npůjdem plavat zakrátko.",
+    /* 3 */  "Zlákali nás do ZOO,\nslíbili nám lachtany.\nTady velké prdlačky,\nto jdem radši do vany.",
+    /* 4 */  "Tudy se jde asi na hrad,\nnesmíme to, bráško, zbabrat.\nNeboj ségra - vím kam jít,\nse mnou se nejde ztratit.",
+    /* 5 */  "Já jsem malá nevěsta,\nstrašně bych se vdávala.\nMě ty svatby nebaví\na škrtí mě kravata.",
+    /* 6 */  "Já jsem velká baleťačka\na to je můj malý bráška.\nSice nejsem baleťák,\nzdobí mě však prima pták.",
+    /* 7 */  "To je ale velká láska,\nmladý muž a mladá kráska.\nDvojčátkovské objetí,\nbudem spolu století.",
+    /* 8 */  "S námi nejsou žádné žerty,\nmy jsme přece řádní čerti.\nKdo se nás nelekne hnedle,\nten se bude smažit v pekle.",
+    /* 9 */  "Tý jo - ty máš príma foťák,\nten by snesl i sám Goťák.\nSlečna - ta má za ušima,\nvždyť je to naše Krišpína.",
+    /* 10 */ "My jsme zdatní turisti,\ntaké velcí srandisti.\nPaříž nebo Barcelona,\nnejlépe je stejně doma.",
+    /* 11 */ "Mám Ti ségra divný pocit,\nže než-li se tu takhle fotit,\nnejspíše nám přijde vhod,\nběžet jako Usain Bolt.",
+    /* 12 */ "Živijó, živijó, živijó,\ntady se slaví a pařijó.\nMy musíme řádně pít,\nať můžeme dlouho žít.",
+    /* 13 */ "Na Vánoce dlouhý noce,\ndárečky jsou tu po roce.\nJá mám VR hračičku,\njá plyšovou kočičku.",
+    /* 14 */ "Covid - to nám byla zkouška,\nsamý šátek, samá rouška.\nNás to ale nezlomilo,\ndo Stromajdy se chodilo.",
+    /* 15 */ "15 - to je krásný věk,\nKiťulka a Davídek.\n6 slaví i Fidlíček\nnáš miloučký králíček.",
+    /* 16 */ "Moříčko, jo, to je naše,\nto my jako můžeme.\nPlavčo, drinky, papáníčko,\nmáme rádi - né že ne.",
+    /* 17 */ "Každý z nás to přece ví,\nDavča - švihák lázeňský.\nJeho sestra Krišpiánka\nto je taky elegánka.",
+    /* 18 */ "Bude zima, bude mráz,\nkam se ségra kam schováš.\nKampak bych se schovávala,\ndám si kulich a tra la la.",
+    /* 19 */ "To je vrchol elegance\ndvojčata ve víru tance.\nPrezident a první dáma\nDavčulda a Krišpijána.",
+    /* 20 */ "Spolu si tu hodujem\nv zelenavé dolině,\nkde tluče srdce fotbalové\nFK TJ Ruzyně.",
+  ];
+
+  // Skladby na pozadí. Až budou hotové, např.:
+  //   { name: "Název skladby", src: "./hudba/skladba1.mp3" },
+  const TRACKS = [
+    { name: "1. Roztoč ten sál", src: "./hudba/1-Roztoč_ten_sál.mp3" },
+    { name: "2. Mikrofon je náš", src: "./hudba/2-Mikrofon_je_náš.mp3" },
+    { name: "3. Cítíš ten groove", src: "./hudba/3-Cítíš_ten_groove.mp3" },
+    { name: "4. Zvedni pěst", src: "./hudba/4-Zvedni_pěst.mp3" },
+    { name: "5. Dvacet svíček", src: "./hudba/5-Dvacet_svíček.mp3" },
+    { name: "6. Easy vibe", src: "./hudba/6-Easy_vibe.mp3" },
+    { name: "7. Krásný sen", src: "./hudba/7-Krásný_sen.mp3" },
+    { name: "8. Ruce nahoru", src: "./hudba/8-Ruce_nahoru.mp3" },
+    { name: "9. Muévete ya", src: "./hudba/9-Muévete_ ya.mp3" },
+    { name: "10. Šampus teče", src: "./hudba/10-Šampus_teče.mp3" },
+    { name: "11. Na zdraví hej", src: "./hudba/11-Na_zdraví_hej.mp3" },
+    { name: "12. Neonová noc", src: "./hudba/12-Neonová_noc.mp3" },
+    { name: "13. Dvacet", src: "./hudba/13-Dvacet.mp3" },
+    { name: "14. Kytara a hlas", src: "./hudba/14-Kytara_a_hlas.mp3" },
+    { name: "15. Basová bouř", src: "./hudba/15-Basová_bouř.mp3" },
+    { name: "16. Opona vzhůru", src: "./hudba/16-Opona_vzhůru.mp3" },
+    { name: "17. Zvedni hlas", src: "./hudba/17-Zvedni_hlas.mp3" },
+    { name: "18. Praská strop", src: "./hudba/18-Praská_strop.mp3" },
+    { name: "19. Na beatu jak král", src: "./hudba/19-Na_beatu_jak_král.mp3" },
+    { name: "20. Do kola jdem", src: "./hudba/20-Do_kola_jdem.mp3" },
+  ];
+
+/* =====================================================================
+   LOGIKA APLIKACE  —  níže obvykle není potřeba nic měnit
+   ===================================================================== */
+
+  const ACCENTS = [
+    { c: 'var(--c1)', c2: 'var(--c3)' }, // fialová→růžová
+    { c: 'var(--c2)', c2: 'var(--c1)' }, // tyrkysová→fialová
+    { c: 'var(--c3)', c2: 'var(--c2)' }, // růžová→tyrkysová
+  ];
+  const STATES = ['number', 'photo', 'poem'];
+  const TILE_ROT = [-8, 6, -5, 4, -6, 5, -4, 7, -8, 6, -5, 4, -6, 5, -4, 7, -8, 6, -5, 4];
+
+  /* ---- Sestavení mřížky ---- */
+  const grid = document.getElementById('grid');
+  for (let age = 1; age <= 20; age++) {
+    const i = age - 1;
+    const accent = ACCENTS[i % 3];
+
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+    tile.dataset.state = 'number';
+    tile.dataset.age = age;
+    tile.style.setProperty('--rot', TILE_ROT[i] + 'deg');
+    tile.style.setProperty('--tile-accent', accent.c);
+    tile.style.setProperty('--tile-accent2', accent.c2);
+
+    const tilt = document.createElement('div');
+    tilt.className = 'tile-tilt';
+
+    const face = document.createElement('div');
+    face.className = 'tile-face';
+    face.setAttribute('role', 'button');
+    face.tabIndex = 0;
+    face.setAttribute('aria-label', `Rok ${age} — klikni pro zvětšení detailu`);
+    face.innerHTML = renderState('number', age);
+    tilt.appendChild(face);
+
+    const dots = document.createElement('div');
+    dots.className = 'state-dots';
+    dots.innerHTML = '<i class="on"></i><i></i><i></i>';
+
+    const rotBtn = document.createElement('button');
+    rotBtn.className = 'rotate-btn';
+    rotBtn.type = 'button';
+    rotBtn.setAttribute('aria-label', `Otočit dlaždici – rok ${age} (číslo / fotka / básnička)`);
+    rotBtn.title = 'Otočit dlaždici (číslo → fotka → básnička)';
+    rotBtn.textContent = '↻';
+
+    tilt.appendChild(dots);
+    tilt.appendChild(rotBtn);
+    tile.appendChild(tilt);
+    grid.appendChild(tile);
+
+    face.addEventListener('click', () => activateTile(tile));
+    face.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activateTile(tile); }
+    });
+    rotBtn.addEventListener('click', (e) => { e.stopPropagation(); cycleTile(tile); });
+  }
+
+  function renderState(state, age) {
+    const i = age - 1;
+    if (state === 'number') {
+      const numRot = (i % 2 === 0) ? 4 : -4;
+      return `<span class="num" style="--num-rot:${numRot}deg">${age}</span>`;
+    }
+    if (state === 'photo') {
+      return `<div class="photo-wrap">
+                <img src="${photoSrc(age)}" alt="Fotka – ${age} let"
+                     onerror="this.parentNode.innerHTML='<div class=&quot;photo-missing&quot;><span class=&quot;big&quot;>📷</span>doplnit fotku<br>(${age} let)</div>'">
+              </div>`;
+    }
+    // poem
+    const text = (POEMS[i] || '').trim();
+    if (!text) {
+      return `<div class="poem"><span class="poem-missing">doplnit básničku<br>(rok ${age})</span></div>`;
+    }
+    return `<div class="poem"><span class="poem-text">${escapeHtml(text)}</span></div>`;
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  }
+
+  /* ---- Cyklení stavů s plynulou flip animací (rohové tlačítko) ---- */
+  function cycleTile(tile) {
+    if (tile.dataset.animating === '1') return;   // zámek během animace
+    tile.dataset.animating = '1';
+
+    const age = parseInt(tile.dataset.age, 10);
+    const cur = tile.dataset.state;
+    const next = STATES[(STATES.indexOf(cur) + 1) % STATES.length];
+    const tilt = tile.querySelector('.tile-tilt');
+    const face = tile.querySelector('.tile-face');
+
+    tilt.classList.add('flipping');            // plocha se otočí na hranu (90°)
+    setTimeout(() => {
+      face.innerHTML = renderState(next, age); // vymění obsah v neviditelné fázi
+      tile.dataset.state = next;
+      updateDots(tile, next);
+      tilt.classList.remove('flipping');       // dotočí plynule zpět
+      setTimeout(() => { tile.dataset.animating = '0'; }, 300);
+    }, 300);
+  }
+
+  function updateDots(tile, state) {
+    const idx = STATES.indexOf(state);
+    tile.querySelectorAll('.state-dots i').forEach((d, k) => {
+      d.classList.toggle('on', k === idx);
+    });
+  }
+
+  /* ---- Kliknutí na dlaždici: číslo → funny efekt, jinak detail ---- */
+  function activateTile(tile) {
+    if (tile.dataset.state === 'number') triggerFun(tile);
+    else openDetail(tile);
+  }
+
+  /* ====================================================================
+     FUNNY EFEKTY  —  náhodná drobná animace v ploše dlaždice (na číslo)
+     Vše se odehrává uvnitř .fun-layer (overflow:hidden) = neopouští dlaždici.
+     Každá funkce vrací svou délku v ms (kvůli úklidu vrstvy).
+     ==================================================================== */
+  const FUN_COLORS = ['#7C4DFF', '#00E5FF', '#FF4081', '#FFD54F', '#4CAF50'];
+  const rndFun = (a, b) => a + Math.random() * (b - a);
+
+  // Náhodný výběr efektů (produkční režim). Pro ladění v pevném pořadí
+  // stačí nastavit FUN_FIXED_ORDER = true.
+  const FUN_FIXED_ORDER = false;
+  let funSeq = 0;
+
+  function triggerFun(tile) {
+    const face = tile.querySelector('.tile-face');
+    if (!face || tile.dataset.fun === '1') return;   // jedna akce naráz
+    tile.dataset.fun = '1';
+    const layer = document.createElement('div');
+    layer.className = 'fun-layer';
+    face.appendChild(layer);
+    const W = layer.clientWidth || 180;
+    const H = layer.clientHeight || 180;
+    const fn = FUN_FIXED_ORDER
+      ? FUN_ACTIONS[funSeq++ % FUN_ACTIONS.length]
+      : FUN_ACTIONS[Math.floor(Math.random() * FUN_ACTIONS.length)];
+    const dur = fn(layer, face, W, H) || 1600;
+    setTimeout(() => { layer.remove(); tile.dataset.fun = '0'; }, dur + 150);
+  }
+
+  // 1) Konfety – výbuch z prostředku, pak hustě padají s rotací
+  function funConfetti(layer, face, W, H) {
+    const N = 34, DUR = 3400;
+    for (let i = 0; i < N; i++) {
+      const p = document.createElement('i');
+      p.className = Math.random() < 0.3 ? 'fun-dot' : 'fun-piece';
+      const s = rndFun(7, 14);
+      p.style.width = s + 'px'; p.style.height = (p.className === 'fun-dot' ? s : s * 1.5) + 'px';
+      p.style.background = FUN_COLORS[i % FUN_COLORS.length];
+      p.style.left = '50%'; p.style.top = '48%';
+      layer.appendChild(p);
+      const ang = rndFun(0, Math.PI * 2), dist = rndFun(25, W * 0.5);
+      const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist - rndFun(15, 40);
+      const fall = rndFun(H * 0.55, H * 0.9), rot = rndFun(240, 900);
+      p.animate([
+        { transform: 'translate(-50%,-50%) rotate(0deg)', opacity: 1 },
+        { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) rotate(${rot * 0.4}deg)`, opacity: 1, offset: 0.5 },
+        { transform: `translate(calc(-50% + ${dx * 1.15}px), calc(-50% + ${dy + fall}px)) rotate(${rot}deg)`, opacity: 0 }
+      ], { duration: DUR + rndFun(0, 500), easing: 'cubic-bezier(.2,.6,.4,1)', fill: 'forwards' });
+    }
+    return DUR + 500;
+  }
+
+  // 2) Ohňostroj – velký, hustý rozlet jiskřiček ve třech vlnách
+  function funFirework(layer, face, W, H) {
+    const DUR = 3900;
+    function burst(cx, cy, n, delay, scale) {
+      const flash = document.createElement('i');
+      flash.className = 'fun-flash';
+      const fs = Math.min(W, H) * 0.85 * scale;
+      flash.style.width = fs + 'px'; flash.style.height = fs + 'px';
+      flash.style.left = cx + 'px'; flash.style.top = cy + 'px';
+      flash.style.transform = 'translate(-50%,-50%)';
+      layer.appendChild(flash);
+      flash.animate([
+        { transform: 'translate(-50%,-50%) scale(0.2)', opacity: 0.95 },
+        { transform: 'translate(-50%,-50%) scale(1.1)', opacity: 0 }
+      ], { duration: 620, delay, easing: 'ease-out', fill: 'forwards' });
+      for (let i = 0; i < n; i++) {
+        const p = document.createElement('i');
+        p.className = 'fun-dot';
+        const s = rndFun(6, 12);
+        p.style.width = s + 'px'; p.style.height = s + 'px';
+        p.style.background = FUN_COLORS[i % FUN_COLORS.length];
+        p.style.left = cx + 'px'; p.style.top = cy + 'px';
+        layer.appendChild(p);
+        const ang = (i / n) * Math.PI * 2 + rndFun(-0.1, 0.1);
+        const dist = rndFun(W * 0.4, W * 0.66) * scale;
+        const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist;
+        p.animate([
+          { transform: 'translate(-50%,-50%) scale(1.2)', opacity: 1 },
+          { transform: `translate(calc(-50% + ${dx * 0.7}px), calc(-50% + ${dy * 0.7}px)) scale(1)`, opacity: 1, offset: 0.5 },
+          { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy + 16}px)) scale(0.35)`, opacity: 0 }
+        ], { duration: 1900, delay, easing: 'cubic-bezier(.12,.7,.35,1)', fill: 'forwards' });
+      }
+    }
+    burst(rndFun(0.35, 0.6) * W, rndFun(0.3, 0.5) * H, 34, 0, 1);
+    burst(rndFun(0.2, 0.45) * W, rndFun(0.25, 0.45) * H, 28, 550, 0.85);
+    burst(rndFun(0.55, 0.8) * W, rndFun(0.4, 0.62) * H, 30, 1100, 0.95);
+    burst(rndFun(0.3, 0.6) * W, rndFun(0.45, 0.68) * H, 30, 1650, 0.9);
+    return DUR;
+  }
+
+  // 3) Šnek – jeden, pomalu přeleze dlaždici nízko dole (nelíže číslo)
+  function funSnail(layer, face, W, H) {
+    const DUR = 3700;
+    const s = document.createElement('div');
+    s.className = 'fun-emoji';
+    s.textContent = '🐌';
+    s.style.fontSize = '34px';
+    s.style.left = '0'; s.style.top = (H * 0.66) + 'px';
+    layer.appendChild(s);
+    s.animate([
+      { transform: `translate(-46px, 0) rotate(0deg)` },
+      { transform: `translate(${W * 0.5}px, -3px) rotate(-2deg)`, offset: 0.5 },
+      { transform: `translate(${W + 46}px, 0) rotate(0deg)` }
+    ], { duration: DUR, easing: 'linear', fill: 'forwards' });
+    return DUR;
+  }
+
+  // 4) Balónky – pár balónků pomalu stoupá vzhůru a mizí za horním okrajem
+  function funBalloons(layer, face, W, H) {
+    const DUR = 4400, N = 6;
+    for (let i = 0; i < N; i++) {
+      const b = document.createElement('div');
+      b.className = 'fun-emoji';
+      b.textContent = '🎈';
+      b.style.fontSize = rndFun(22, 34) + 'px';
+      b.style.left = rndFun(0.06, 0.86) * W + 'px';
+      b.style.top = H + 'px';
+      layer.appendChild(b);
+      const sway = rndFun(-16, 16), delay = rndFun(0, 350);
+      b.animate([
+        { transform: 'translate(0,0)', opacity: 1 },
+        { transform: `translate(${sway}px, ${-(H + 55)}px)`, opacity: 1, offset: 0.85 },
+        { transform: `translate(${sway * 1.3}px, ${-(H + 80)}px)`, opacity: 0 }
+      ], { duration: DUR, delay, easing: 'ease-in', fill: 'forwards' });
+    }
+    return DUR + 800;
+  }
+
+  // 6) Déšť oslavných emoji – padají shora s rotací
+  function funEmojiRain(layer, face, W, H) {
+    const DUR = 2400, N = 14;
+    const set = ['🎉', '🎊', '🥳', '✨', '🎈', '⭐', '🎁'];
+    for (let i = 0; i < N; i++) {
+      const e = document.createElement('div');
+      e.className = 'fun-emoji';
+      e.style.fontSize = rndFun(18, 28) + 'px';
+      e.textContent = set[Math.floor(Math.random() * set.length)];
+      e.style.left = rndFun(0.05, 0.95) * W + 'px';
+      e.style.top = '0';
+      layer.appendChild(e);
+      const sway = rndFun(-18, 18), rot = rndFun(-220, 220), delay = rndFun(0, 900);
+      e.animate([
+        { transform: 'translate(-50%,-46px) rotate(0deg)', opacity: 0 },
+        { transform: `translate(calc(-50% + ${sway * 0.5}px), ${H * 0.5}px) rotate(${rot * 0.5}deg)`, opacity: 1, offset: 0.3 },
+        { transform: `translate(calc(-50% + ${sway}px), ${H + 44}px) rotate(${rot}deg)`, opacity: 1 }
+      ], { duration: DUR, delay, easing: 'ease-in', fill: 'forwards' });
+    }
+    return DUR + 900;
+  }
+
+  // 8) Skákající dárek – poskakuje přes dlaždici zleva doprava
+  function funGift(layer, face, W, H) {
+    const DUR = 4100;
+    const g = document.createElement('div');
+    g.className = 'fun-emoji';
+    g.textContent = '🎁';
+    g.style.fontSize = '32px';
+    g.style.left = '0'; g.style.top = (H * 0.6) + 'px';
+    layer.appendChild(g);
+    g.animate([
+      { transform: 'translate(-34px, 0)' },
+      { transform: `translate(${W * 0.2}px, ${-H * 0.3}px)`, offset: 0.2 },
+      { transform: `translate(${W * 0.4}px, 0)`, offset: 0.4 },
+      { transform: `translate(${W * 0.6}px, ${-H * 0.24}px)`, offset: 0.6 },
+      { transform: `translate(${W * 0.8}px, 0)`, offset: 0.8 },
+      { transform: `translate(${W + 34}px, ${-H * 0.12}px)`, offset: 1 }
+    ], { duration: DUR, easing: 'ease-in-out', fill: 'forwards' });
+    return DUR;
+  }
+
+  // 9) Srdíčka – stoupají vzhůru a mizí
+  function funHearts(layer, face, W, H) {
+    const DUR = 4200, N = 10;
+    const set = ['❤️', '💖', '💕', '💗', '💘'];
+    for (let i = 0; i < N; i++) {
+      const h = document.createElement('div');
+      h.className = 'fun-emoji';
+      h.style.fontSize = rndFun(18, 30) + 'px';
+      h.textContent = set[Math.floor(Math.random() * set.length)];
+      h.style.left = rndFun(0.1, 0.9) * W + 'px';
+      h.style.top = H + 'px';
+      layer.appendChild(h);
+      const sway = rndFun(-14, 14), delay = rndFun(0, 1000);
+      h.animate([
+        { transform: 'translate(-50%,0) scale(0.6)', opacity: 0 },
+        { transform: `translate(calc(-50% + ${sway}px), ${-H * 0.5}px) scale(1)`, opacity: 1, offset: 0.4 },
+        { transform: `translate(calc(-50% + ${sway * 1.3}px), ${-(H + 40)}px) scale(0.9)`, opacity: 0 }
+      ], { duration: DUR, delay, easing: 'ease-in', fill: 'forwards' });
+    }
+    return DUR + 1000;
+  }
+
+  // 10) Hvězdný vír – hvězdičky se roztočí ze středu do spirály
+  function funStarSwirl(layer, face, W, H) {
+    const DUR = 4800, N = 16;
+    const set = ['⭐', '🌟', '✨'];
+    for (let i = 0; i < N; i++) {
+      const st = document.createElement('span');
+      st.className = 'fun-spark';
+      st.style.fontSize = rndFun(15, 22) + 'px';
+      st.textContent = set[i % set.length];
+      st.style.left = '50%'; st.style.top = '50%';
+      layer.appendChild(st);
+      const ang = (i / N) * Math.PI * 2, dist = rndFun(W * 0.3, W * 0.48);
+      const mx = Math.cos(ang + 0.6) * dist * 0.5, my = Math.sin(ang + 0.6) * dist * 0.5;
+      const ex = Math.cos(ang + 1.2) * dist, ey = Math.sin(ang + 1.2) * dist;
+      st.animate([
+        { transform: 'translate(-50%,-50%) rotate(0deg) scale(0.3)', opacity: 0 },
+        { transform: `translate(calc(-50% + ${mx}px), calc(-50% + ${my}px)) rotate(180deg) scale(1.1)`, opacity: 1, offset: 0.5 },
+        { transform: `translate(calc(-50% + ${ex}px), calc(-50% + ${ey}px)) rotate(360deg) scale(0.5)`, opacity: 0 }
+      ], { duration: DUR, delay: rndFun(0, 180), easing: 'ease-out', fill: 'forwards' });
+    }
+    return DUR + 180;
+  }
+
+  // 11) Opička na gumě – spustí se shora, chvíli visí a vymrští se zpět nahoru
+  function funMonkey(layer, face, W, H) {
+    const DUR = 4600;
+    const downY = H * 0.5;                 // kam se opička spustí (její horní okraj)
+    const line = document.createElement('i');
+    line.style.position = 'absolute';
+    line.style.left = '82%'; line.style.top = '0';
+    line.style.width = '3px';
+    line.style.height = (downY + 14) + 'px';
+    line.style.background = 'linear-gradient(#8d6e63, #a1887f)';
+    line.style.transformOrigin = 'top center';
+    line.style.borderRadius = '2px';
+    layer.appendChild(line);
+
+    const m = document.createElement('div');
+    m.className = 'fun-emoji';
+    m.textContent = '🐒';
+    m.style.fontSize = '36px';
+    m.style.left = '82%'; m.style.top = '0';
+    layer.appendChild(m);
+
+    const keys = [
+      { o: 0,     y: -48,          ls: 0 },     // nad dlaždicí (mimo)
+      { o: 0.22, y: downY * 1.12,  ls: 1.12 },  // pružné přehoupnutí dolů
+      { o: 0.34, y: downY,         ls: 1 },     // ustálení
+      { o: 0.5,  y: downY - 7,     ls: 0.9 },   // lehké houpnutí
+      { o: 0.64, y: downY,         ls: 1 },
+      { o: 0.8,  y: downY,         ls: 1 },     // chvíli visí
+      { o: 1,    y: -48,           ls: 0 }      // vymrští se zpět nahoru
+    ];
+    line.animate(
+      keys.map(k => ({ transform: `translateX(-50%) scaleY(${k.ls})`, offset: k.o })),
+      { duration: DUR, easing: 'ease-in-out', fill: 'forwards' }
+    );
+    m.animate(
+      keys.map(k => ({ transform: `translate(-50%, ${k.y}px)`, offset: k.o })),
+      { duration: DUR, easing: 'ease-in-out', fill: 'forwards' }
+    );
+    return DUR;
+  }
+
+  // 12) Rostoucí srdce – pomalu se vykreslí velký obrys srdce, zvětšuje se a zmizí
+  function funHeartGrow(layer, face, W, H) {
+    const DUR = 4000;
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.style.position = 'absolute';
+    svg.style.left = '50%'; svg.style.top = '50%';
+    const size = Math.min(W, H) * 0.92;
+    svg.style.width = size + 'px'; svg.style.height = size + 'px';
+    svg.style.transform = 'translate(-50%,-50%) scale(0.15)';
+    svg.style.overflow = 'visible';
+
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', 'M50 30 C50 30 45 10 25 10 C2 10 2 37 2 37 C2 55 22 72 50 90 C78 72 98 55 98 37 C98 37 98 10 75 10 C55 10 50 30 50 30 Z');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', '#FF4081');
+    path.setAttribute('stroke-width', '4');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    svg.appendChild(path);
+    layer.appendChild(svg);
+
+    const len = (path.getTotalLength && path.getTotalLength()) || 320;
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    path.animate(
+      [{ strokeDashoffset: len }, { strokeDashoffset: 0 }],
+      { duration: DUR * 0.55, easing: 'ease-in-out', fill: 'forwards' }
+    );
+    svg.animate([
+      { transform: 'translate(-50%,-50%) scale(0.15)', opacity: 0 },
+      { transform: 'translate(-50%,-50%) scale(0.6)',  opacity: 1, offset: 0.4 },
+      { transform: 'translate(-50%,-50%) scale(1)',    opacity: 1, offset: 0.78 },
+      { transform: 'translate(-50%,-50%) scale(1.08)', opacity: 0, offset: 1 }
+    ], { duration: DUR, easing: 'ease-in-out', fill: 'forwards' });
+    return DUR;
+  }
+
+  // 13) Fotbalový míč – přiletí zprava a odráží se postupně skoky doleva
+  function funFootball(layer, face, W, H) {
+    const DUR = 3400;
+    const groundY = H * 0.72;              // úroveň "země" (horní okraj míče při dopadu)
+    const b = document.createElement('div');
+    b.className = 'fun-emoji';
+    b.textContent = '⚽';
+    b.style.fontSize = '34px';
+    b.style.left = '0'; b.style.top = '0';
+    layer.appendChild(b);
+    // start vpravo mimo plochu, série stále nižších odrazů směrem doleva
+    const keys = [
+      { o: 0,    x: W + 40,   y: groundY - H * 0.55, r: 0 },
+      { o: 0.2,  x: W * 0.72, y: groundY,            r: -220 },  // 1. dopad
+      { o: 0.34, x: W * 0.58, y: groundY - H * 0.34, r: -360 },  // odraz
+      { o: 0.48, x: W * 0.44, y: groundY,            r: -520 },  // 2. dopad
+      { o: 0.6,  x: W * 0.32, y: groundY - H * 0.20, r: -650 },
+      { o: 0.72, x: W * 0.20, y: groundY,            r: -780 },  // 3. dopad
+      { o: 0.84, x: W * 0.10, y: groundY - H * 0.10, r: -880 },
+      { o: 1,    x: -40,      y: groundY,            r: -1040 }
+    ];
+    b.animate(
+      keys.map(k => ({ transform: `translate(${k.x}px, ${k.y}px) rotate(${k.r}deg)`, offset: k.o })),
+      { duration: DUR, easing: 'ease-in-out', fill: 'forwards' }
+    );
+    return DUR;
+  }
+
+  // 14) Rozkvétající kytice – od středu se postupně zvětšuje až na velkou kytici
+  function funBouquet(layer, face, W, H) {
+    const DUR = 3200;
+    const big = Math.min(W, H) * 0.92;
+    const g = document.createElement('div');
+    g.className = 'fun-emoji';
+    g.textContent = '💐';
+    g.style.left = '50%'; g.style.top = '50%';
+    g.style.fontSize = big + 'px';
+    g.style.transform = 'translate(-50%,-50%) scale(0.05)';
+    layer.appendChild(g);
+    g.animate([
+      { transform: 'translate(-50%,-50%) scale(0.05) rotate(-12deg)', opacity: 0 },
+      { transform: 'translate(-50%,-50%) scale(0.5) rotate(-4deg)',   opacity: 1, offset: 0.4 },
+      { transform: 'translate(-50%,-50%) scale(1) rotate(0deg)',      opacity: 1, offset: 0.82 },
+      { transform: 'translate(-50%,-50%) scale(1.06) rotate(2deg)',   opacity: 0, offset: 1 }
+    ], { duration: DUR, easing: 'cubic-bezier(.2,.7,.35,1)', fill: 'forwards' });
+    return DUR;
+  }
+
+  // 15) Vybuchující dárek – velký dárek uprostřed, po ~3 s se roztřese a vybuchne do stran
+  function funGiftExplode(layer, face, W, H) {
+    const HOLD = 3000;                 // jak dlouho dárek "sedí" před výbuchem
+    const BOOM = 1600;                 // délka rozletu střepin
+    const DUR = HOLD + BOOM;
+    const big = Math.min(W, H) * 0.62;
+
+    // velký dárek uprostřed: naskočí, jemně poskakuje/třese se, pak zmizí
+    const g = document.createElement('div');
+    g.className = 'fun-emoji';
+    g.textContent = '🎁';
+    g.style.left = '50%'; g.style.top = '50%';
+    g.style.fontSize = big + 'px';
+    layer.appendChild(g);
+    g.animate([
+      { transform: 'translate(-50%,-50%) scale(0.1) rotate(0deg)', opacity: 0, offset: 0 },
+      { transform: 'translate(-50%,-50%) scale(1) rotate(0deg)',   opacity: 1, offset: 0.12 },
+      { transform: 'translate(-50%,-52%) scale(1.02) rotate(-4deg)', opacity: 1, offset: 0.5 },
+      { transform: 'translate(-50%,-50%) scale(1) rotate(4deg)',   opacity: 1, offset: 0.72 },
+      { transform: 'translate(-50%,-54%) scale(1.08) rotate(-3deg)', opacity: 1, offset: 0.9 },
+      { transform: 'translate(-50%,-50%) scale(1.25) rotate(0deg)', opacity: 1, offset: 0.97 },
+      { transform: 'translate(-50%,-50%) scale(0.2) rotate(0deg)',  opacity: 0, offset: 1 }
+    ], { duration: HOLD, easing: 'ease-in-out', fill: 'forwards' });
+
+    // výbuch až po HOLD ms
+    setTimeout(() => {
+      // světelný záblesk
+      const flash = document.createElement('i');
+      flash.className = 'fun-flash';
+      const fs = Math.min(W, H) * 1.1;
+      flash.style.width = fs + 'px'; flash.style.height = fs + 'px';
+      flash.style.left = '50%'; flash.style.top = '50%';
+      flash.style.transform = 'translate(-50%,-50%)';
+      layer.appendChild(flash);
+      flash.animate([
+        { transform: 'translate(-50%,-50%) scale(0.2)', opacity: 0.95 },
+        { transform: 'translate(-50%,-50%) scale(1.2)', opacity: 0 }
+      ], { duration: 500, easing: 'ease-out', fill: 'forwards' });
+
+      // střepiny (konfety) rozlétnuté do všech stran
+      const N = 30;
+      for (let i = 0; i < N; i++) {
+        const p = document.createElement('i');
+        p.className = Math.random() < 0.3 ? 'fun-dot' : 'fun-piece';
+        const s = rndFun(7, 14);
+        p.style.width = s + 'px'; p.style.height = (p.className === 'fun-dot' ? s : s * 1.6) + 'px';
+        p.style.background = FUN_COLORS[i % FUN_COLORS.length];
+        p.style.left = '50%'; p.style.top = '50%';
+        layer.appendChild(p);
+        const ang = (i / N) * Math.PI * 2 + rndFun(-0.2, 0.2);
+        const dist = rndFun(W * 0.34, W * 0.6);
+        const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist;
+        const rot = rndFun(240, 900);
+        p.animate([
+          { transform: 'translate(-50%,-50%) scale(1.2) rotate(0deg)', opacity: 1 },
+          { transform: `translate(calc(-50% + ${dx * 0.7}px), calc(-50% + ${dy * 0.7}px)) rotate(${rot * 0.5}deg)`, opacity: 1, offset: 0.55 },
+          { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy + H * 0.12}px)) rotate(${rot}deg)`, opacity: 0 }
+        ], { duration: BOOM, easing: 'cubic-bezier(.15,.7,.35,1)', fill: 'forwards' });
+      }
+      // pár oslavných emoji do výbuchu
+      const set = ['🎉', '🎊', '✨', '⭐'];
+      for (let i = 0; i < 8; i++) {
+        const e = document.createElement('span');
+        e.className = 'fun-spark';
+        e.style.fontSize = rndFun(16, 26) + 'px';
+        e.textContent = set[i % set.length];
+        e.style.left = '50%'; e.style.top = '50%';
+        layer.appendChild(e);
+        const ang = (i / 8) * Math.PI * 2 + 0.4;
+        const dist = rndFun(W * 0.28, W * 0.5);
+        const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist;
+        e.animate([
+          { transform: 'translate(-50%,-50%) scale(0.4)', opacity: 0 },
+          { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(1.15)`, opacity: 1, offset: 0.5 },
+          { transform: `translate(calc(-50% + ${dx * 1.15}px), calc(-50% + ${dy + H * 0.1}px)) scale(0.7)`, opacity: 0 }
+        ], { duration: BOOM, easing: 'ease-out', fill: 'forwards' });
+      }
+    }, HOLD);
+
+    return DUR;
+  }
+
+  /* ====================================================================
+     KANDIDÁTI 13–24  —  nové efekty ve zkušebním kole (fixní pořadí)
+     Původních 12 efektů (funConfetti … funGiftExplode) zůstává výše
+     definováno, jen jsou dočasně mimo rotaci – vrátíme je později.
+     ==================================================================== */
+
+  // 13) Dort se svíčkami – dort naskočí, svíčky zaplápolají a sfouknou se (kouř)
+  function funCake(layer, face, W, H) {
+    const DUR = 3800;
+    const big = Math.min(W, H) * 0.6;
+    const cake = document.createElement('div');
+    cake.className = 'fun-emoji';
+    cake.textContent = '🎂';
+    cake.style.left = '50%'; cake.style.top = '60%';
+    cake.style.fontSize = big + 'px';
+    layer.appendChild(cake);
+    cake.animate([
+      { transform: 'translate(-50%,-50%) scale(0.1)', opacity: 0 },
+      { transform: 'translate(-50%,-50%) scale(1)', opacity: 1, offset: 0.2 },
+      { transform: 'translate(-50%,-52%) scale(1.02)', opacity: 1, offset: 0.6 },
+      { transform: 'translate(-50%,-50%) scale(1)', opacity: 1, offset: 1 }
+    ], { duration: DUR, easing: 'ease-out', fill: 'forwards' });
+    const fx = [0.4, 0.5, 0.6];
+    fx.forEach((fxp) => {
+      const fl = document.createElement('span');
+      fl.className = 'fun-spark';
+      fl.textContent = '🔥';
+      fl.style.fontSize = (big * 0.14) + 'px';
+      fl.style.left = (fxp * W) + 'px';
+      fl.style.top = (H * 0.34) + 'px';
+      layer.appendChild(fl);
+      fl.animate([
+        { transform: 'translate(-50%,-50%) scale(0)', opacity: 0, offset: 0 },
+        { transform: 'translate(-50%,-50%) scale(1)', opacity: 1, offset: 0.2 },
+        { transform: 'translate(-50%,-60%) scale(1.1)', opacity: 1, offset: 0.55 },
+        { transform: 'translate(-50%,-50%) scale(1)', opacity: 1, offset: 0.72 },
+        { transform: 'translate(-50%,-50%) scale(0.2)', opacity: 0, offset: 0.8 }
+      ], { duration: DUR, easing: 'ease-in-out', fill: 'forwards' });
+    });
+    setTimeout(() => {
+      fx.forEach((fxp) => {
+        const sm = document.createElement('span');
+        sm.className = 'fun-spark';
+        sm.textContent = '💨';
+        sm.style.fontSize = (big * 0.13) + 'px';
+        sm.style.left = (fxp * W) + 'px';
+        sm.style.top = (H * 0.32) + 'px';
+        layer.appendChild(sm);
+        sm.animate([
+          { transform: 'translate(-50%,-50%) scale(0.4)', opacity: 0 },
+          { transform: 'translate(-50%,-120%) scale(1)', opacity: 0.9, offset: 0.5 },
+          { transform: 'translate(-50%,-200%) scale(1.2)', opacity: 0 }
+        ], { duration: DUR * 0.2, easing: 'ease-out', fill: 'forwards' });
+      });
+    }, DUR * 0.8);
+    return DUR;
+  }
+
+  // 14) Šampaňské – zátka vystřelí a proud bublinek se rozprskne
+  function funChampagne(layer, face, W, H) {
+    const DUR = 3200;
+    const bottle = document.createElement('div');
+    bottle.className = 'fun-emoji';
+    bottle.textContent = '🍾';
+    bottle.style.fontSize = (Math.min(W, H) * 0.34) + 'px';
+    bottle.style.left = (W * 0.22) + 'px'; bottle.style.top = (H * 0.68) + 'px';
+    layer.appendChild(bottle);
+    bottle.animate([
+      { transform: 'translate(-50%,-50%) rotate(-8deg) scale(0.4)', opacity: 0 },
+      { transform: 'translate(-50%,-50%) rotate(-8deg) scale(1)', opacity: 1, offset: 0.15 },
+      { transform: 'translate(-50%,-50%) rotate(-16deg) scale(1)', opacity: 1, offset: 0.3 },
+      { transform: 'translate(-50%,-50%) rotate(-8deg) scale(1)', opacity: 1, offset: 0.45 },
+      { transform: 'translate(-50%,-50%) rotate(-8deg) scale(1)', opacity: 1, offset: 1 }
+    ], { duration: DUR, easing: 'ease-out', fill: 'forwards' });
+    const mx = W * 0.31, my = H * 0.42;
+    const cork = document.createElement('i');
+    cork.className = 'fun-dot';
+    cork.style.width = cork.style.height = '10px';
+    cork.style.background = '#c9a24b';
+    cork.style.left = mx + 'px'; cork.style.top = my + 'px';
+    layer.appendChild(cork);
+    cork.animate([
+      { transform: 'translate(-50%,-50%)', opacity: 0 },
+      { transform: 'translate(-50%,-50%)', opacity: 1, offset: 0.28 },
+      { transform: `translate(${W * 0.5}px, ${-H * 0.5}px)`, opacity: 1, offset: 0.6 },
+      { transform: `translate(${W * 0.7}px, ${-H * 0.2}px)`, opacity: 0, offset: 1 }
+    ], { duration: DUR, easing: 'ease-out', fill: 'forwards' });
+    setTimeout(() => {
+      for (let i = 0; i < 22; i++) {
+        const b = document.createElement('i');
+        b.className = 'fun-dot';
+        const s = rndFun(4, 9);
+        b.style.width = b.style.height = s + 'px';
+        b.style.background = 'rgba(255,240,180,0.9)';
+        b.style.left = mx + 'px'; b.style.top = my + 'px';
+        layer.appendChild(b);
+        const ang = rndFun(-1.35, -0.6);
+        const dist = rndFun(W * 0.35, W * 0.75);
+        const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist;
+        b.animate([
+          { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
+          { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.5)`, opacity: 0 }
+        ], { duration: rndFun(900, 1500), delay: rndFun(0, 500), easing: 'ease-out', fill: 'forwards' });
+      }
+    }, DUR * 0.28);
+    return DUR;
+  }
+
+  // 15) Padající hvězda – kometa přeletí šikmo se svítící stopou
+  function funShootingStar(layer, face, W, H) {
+    const DUR = 2400;
+    const sX = W * 1.1, sY = -H * 0.1, eX = -W * 0.1, eY = H * 1.1;
+    const star = document.createElement('div');
+    star.className = 'fun-emoji';
+    star.textContent = '🌠';
+    star.style.fontSize = (Math.min(W, H) * 0.28) + 'px';
+    star.style.left = '0'; star.style.top = '0';
+    layer.appendChild(star);
+    star.animate([
+      { transform: `translate(${sX}px, ${sY}px) scale(0.6)`, opacity: 0 },
+      { transform: `translate(${(sX + eX) / 2}px, ${(sY + eY) / 2}px) scale(1)`, opacity: 1, offset: 0.4 },
+      { transform: `translate(${eX}px, ${eY}px) scale(0.7)`, opacity: 0 }
+    ], { duration: DUR, easing: 'ease-in', fill: 'forwards' });
+    const N = 14;
+    for (let i = 0; i < N; i++) {
+      const t = i / N;
+      const px = sX + (eX - sX) * t, py = sY + (eY - sY) * t;
+      const d = document.createElement('i');
+      d.className = 'fun-dot';
+      const s = rndFun(3, 7);
+      d.style.width = d.style.height = s + 'px';
+      d.style.background = FUN_COLORS[i % FUN_COLORS.length];
+      d.style.left = '0'; d.style.top = '0';
+      d.style.transform = `translate(${px}px, ${py}px)`;
+      layer.appendChild(d);
+      d.animate([
+        { opacity: 0, transform: `translate(${px}px, ${py}px) scale(1)` },
+        { opacity: 0.9, offset: 0.3 },
+        { opacity: 0, transform: `translate(${px}px, ${py}px) scale(0.3)` }
+      ], { duration: 700, delay: t * DUR * 0.6, easing: 'ease-out', fill: 'forwards' });
+    }
+    return DUR + 200;
+  }
+
+  // 16) Mýdlové bubliny – průhledné bubliny stoupají, kývají se a praskají
+  function funBubbles(layer, face, W, H) {
+    const DUR = 3800, N = 12;
+    for (let i = 0; i < N; i++) {
+      const b = document.createElement('i');
+      const s = rndFun(14, 32);
+      b.style.position = 'absolute';
+      b.style.width = b.style.height = s + 'px';
+      b.style.borderRadius = '50%';
+      b.style.background = 'radial-gradient(circle at 32% 30%, rgba(255,255,255,0.9), rgba(180,220,255,0.35) 45%, rgba(150,190,255,0.12) 70%)';
+      b.style.border = '1px solid rgba(255,255,255,0.5)';
+      b.style.left = rndFun(0.1, 0.9) * W + 'px';
+      b.style.top = H + 'px';
+      layer.appendChild(b);
+      const sway = rndFun(-20, 20), rise = rndFun(H * 0.6, H * 1.05), delay = rndFun(0, 1400);
+      b.animate([
+        { transform: 'translate(-50%,0) scale(0.4)', opacity: 0 },
+        { transform: `translate(calc(-50% + ${sway * 0.5}px), ${-rise * 0.5}px) scale(1)`, opacity: 1, offset: 0.4 },
+        { transform: `translate(calc(-50% + ${sway}px), ${-rise}px) scale(1.15)`, opacity: 1, offset: 0.85 },
+        { transform: `translate(calc(-50% + ${sway}px), ${-rise}px) scale(1.5)`, opacity: 0, offset: 1 }
+      ], { duration: rndFun(2200, 3200), delay, easing: 'ease-out', fill: 'forwards' });
+    }
+    return DUR + 400;
+  }
+
+  // 17) UFO – přiletí, paprskem nadzvedne číslo a s mrknutím odletí
+  function funUFO(layer, face, W, H) {
+    const DUR = 4200;
+    const num = face.querySelector('.num');
+    const ufo = document.createElement('div');
+    ufo.className = 'fun-emoji';
+    ufo.textContent = '🛸';
+    ufo.style.fontSize = (Math.min(W, H) * 0.34) + 'px';
+    ufo.style.left = '50%'; ufo.style.top = '0';
+    layer.appendChild(ufo);
+    ufo.animate([
+      { transform: `translate(-180%, ${-H * 0.2}px)`, opacity: 0, offset: 0 },
+      { transform: `translate(-50%, ${H * 0.12}px)`, opacity: 1, offset: 0.25 },
+      { transform: `translate(-50%, ${H * 0.12}px)`, opacity: 1, offset: 0.72 },
+      { transform: `translate(220%, ${-H * 0.15}px)`, opacity: 0, offset: 1 }
+    ], { duration: DUR, easing: 'ease-in-out', fill: 'forwards' });
+    const beam = document.createElement('i');
+    beam.style.position = 'absolute';
+    beam.style.left = '50%'; beam.style.top = (H * 0.2) + 'px';
+    beam.style.width = (W * 0.42) + 'px'; beam.style.height = (H * 0.6) + 'px';
+    beam.style.transform = 'translateX(-50%)';
+    beam.style.background = 'linear-gradient(to bottom, rgba(120,255,200,0.55), rgba(120,255,200,0))';
+    beam.style.clipPath = 'polygon(38% 0, 62% 0, 100% 100%, 0 100%)';
+    layer.appendChild(beam);
+    beam.animate([
+      { opacity: 0, offset: 0 },
+      { opacity: 0, offset: 0.26 },   // paprsek se rozsvítí až když UFO doletí nad číslo
+      { opacity: 1, offset: 0.4 },
+      { opacity: 1, offset: 0.6 },
+      { opacity: 0, offset: 0.61 }, { opacity: 0, offset: 1 }
+    ], { duration: DUR, easing: 'ease-in-out', fill: 'forwards' });
+    if (num) {
+      num.animate([
+        { transform: 'translateY(0) scale(1)', offset: 0 },
+        { transform: 'translateY(0) scale(1)', offset: 0.32 },
+        { transform: `translateY(${-H * 0.22}px) scale(0.8)`, offset: 0.5 },
+        { transform: `translateY(${-H * 0.22}px) scale(0.8)`, offset: 0.6 },
+        { transform: 'translateY(0) scale(1)', offset: 0.75 }
+      ], { duration: DUR, easing: 'ease-in-out' });
+    }
+    return DUR;
+  }
+
+  // 18) Diskotéka – barevná světla pulzují + zrcadlová koule
+  function funDisco(layer, face, W, H) {
+    const DUR = 3600;
+    const cols = ['#FF4081', '#00E5FF', '#7C4DFF', '#FFD54F', '#4CAF50'];
+    for (let i = 0; i < 7; i++) {
+      const g = document.createElement('i');
+      g.style.position = 'absolute';
+      const s = rndFun(W * 0.3, W * 0.55);
+      g.style.width = g.style.height = s + 'px';
+      g.style.borderRadius = '50%';
+      g.style.filter = 'blur(14px)';
+      g.style.background = cols[i % cols.length];
+      g.style.left = rndFun(0, 1) * W + 'px';
+      g.style.top = rndFun(0, 1) * H + 'px';
+      g.style.transform = 'translate(-50%,-50%)';
+      g.style.mixBlendMode = 'screen';
+      layer.appendChild(g);
+      g.animate([
+        { opacity: 0 }, { opacity: 0.75, offset: 0.5 }, { opacity: 0 }
+      ], { duration: rndFun(500, 800), delay: rndFun(0, DUR * 0.8), iterations: 3, easing: 'ease-in-out' });
+    }
+    const ball = document.createElement('div');
+    ball.className = 'fun-emoji';
+    ball.textContent = '🪩';
+    ball.style.fontSize = (Math.min(W, H) * 0.3) + 'px';
+    ball.style.left = '50%'; ball.style.top = '30%';
+    layer.appendChild(ball);
+    ball.animate([
+      { transform: 'translate(-50%,-50%) scale(0.2) rotate(0deg)', opacity: 0 },
+      { transform: 'translate(-50%,-50%) scale(1) rotate(180deg)', opacity: 1, offset: 0.2 },
+      { transform: 'translate(-50%,-50%) scale(1) rotate(320deg)', opacity: 1, offset: 0.85 },
+      { transform: 'translate(-50%,-50%) scale(0.6) rotate(360deg)', opacity: 0, offset: 1 }
+    ], { duration: DUR, easing: 'ease-in-out', fill: 'forwards' });
+    return DUR;
+  }
+
+  // 19) Roztančené noty – z čísla vylétají notičky a poskakují vzhůru
+  function funNotes(layer, face, W, H) {
+    const DUR = 4000, N = 10;
+    const set = ['🎵', '🎶', '🎼', '🎤'];
+    for (let i = 0; i < N; i++) {
+      const n = document.createElement('div');
+      n.className = 'fun-emoji';
+      n.style.fontSize = rndFun(18, 30) + 'px';
+      n.textContent = set[i % set.length];
+      n.style.left = '50%'; n.style.top = '55%';
+      layer.appendChild(n);
+      const dir = (i % 2 === 0) ? 1 : -1;
+      const spread = rndFun(W * 0.15, W * 0.42) * dir;
+      n.animate([
+        { transform: 'translate(-50%,-50%) rotate(0deg) scale(0.5)', opacity: 0 },
+        { transform: `translate(calc(-50% + ${spread * 0.4}px), ${-H * 0.2}px) rotate(${12 * dir}deg) scale(1)`, opacity: 1, offset: 0.35 },
+        { transform: `translate(calc(-50% + ${spread * 0.75}px), ${-H * 0.42}px) rotate(${-10 * dir}deg) scale(1)`, opacity: 1, offset: 0.7 },
+        { transform: `translate(calc(-50% + ${spread}px), ${-H * 0.62}px) rotate(${8 * dir}deg) scale(0.9)`, opacity: 0, offset: 1 }
+      ], { duration: DUR - 600, delay: rndFun(0, 1200), easing: 'ease-in-out', fill: 'forwards' });
+    }
+    return DUR;
+  }
+
+  // pomocná dráha číslic "20" (posloupnost bodů; nejdřív 2, pak 0) – pro efekty 20 a 23
+  function path20(W, H) {
+    const cx = W / 2, cy = H / 2;
+    const size = Math.min(W, H) * 0.6;
+    const dh = size, dw = size * 0.46, gap = size * 0.12;
+    const cx2 = cx - (dw / 2 + gap / 2), cx0 = cx + (dw / 2 + gap / 2);
+    const loc = (dcx, u, v) => ({ x: dcx - dw / 2 + u * dw, y: cy - dh / 2 + v * dh });
+    const lerp = (a, b, seg) => {
+      const out = [];
+      for (let k = 0; k < seg; k++) { const t = k / seg; out.push({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t }); }
+      return out;
+    };
+    const p2 = [
+      loc(cx2, 0.12, 0.28), loc(cx2, 0.5, 0.06), loc(cx2, 0.88, 0.28),
+      loc(cx2, 0.55, 0.58), loc(cx2, 0.15, 0.96), loc(cx2, 0.9, 0.96)
+    ];
+    let two = [];
+    for (let i = 0; i < p2.length - 1; i++) two = two.concat(lerp(p2[i], p2[i + 1], 7));
+    let zero = [];
+    const Z = 26;
+    for (let i = 0; i <= Z; i++) {
+      const a = -Math.PI / 2 + (i / Z) * Math.PI * 2;
+      zero.push(loc(cx0, 0.5 + Math.cos(a) * 0.4, 0.5 + Math.sin(a) * 0.46));
+    }
+    return two.concat(zero);
+  }
+
+  // 20) Kouzelná hůlka – z třpytek nakreslí "20", které pak zajiskří a zmizí
+  function funMagicWand(layer, face, W, H) {
+    const pts = path20(W, H);
+    const DRAW = 2600, HOLD = 700, FADE = 900;
+    const DUR = DRAW + HOLD + FADE;
+    const wand = document.createElement('div');
+    wand.className = 'fun-emoji';
+    wand.textContent = '🪄';
+    wand.style.fontSize = (Math.min(W, H) * 0.22) + 'px';
+    wand.style.left = '0'; wand.style.top = '0';
+    layer.appendChild(wand);
+    wand.animate(
+      pts.map((p, i) => ({ transform: `translate(${p.x}px, ${p.y}px) rotate(-20deg)`, offset: i / (pts.length - 1) })),
+      { duration: DRAW, easing: 'linear', fill: 'forwards' }
+    );
+    pts.forEach((p, i) => {
+      const sp = document.createElement('span');
+      sp.className = 'fun-spark';
+      sp.textContent = '✨';
+      sp.style.fontSize = rndFun(11, 17) + 'px';
+      sp.style.left = p.x + 'px'; sp.style.top = p.y + 'px';
+      layer.appendChild(sp);
+      const appear = (i / pts.length) * DRAW;
+      sp.animate([
+        { opacity: 0, transform: 'translate(-50%,-50%) scale(0)' },
+        { opacity: 1, transform: 'translate(-50%,-50%) scale(1)', offset: 0.15 },
+        { opacity: 1, transform: 'translate(-50%,-50%) scale(1)', offset: 0.8 },
+        { opacity: 0, transform: 'translate(-50%,-50%) scale(1.4)' }
+      ], { duration: DUR - appear, delay: appear, easing: 'ease-out', fill: 'forwards' });
+    });
+    return DUR;
+  }
+
+  // 21) Motýli – rozletí se z čísla a poletují po vlnkách pryč
+  function funButterflies(layer, face, W, H) {
+    const DUR = 4200, N = 7;
+    for (let i = 0; i < N; i++) {
+      const b = document.createElement('div');
+      b.className = 'fun-emoji';
+      b.textContent = '🦋';
+      b.style.fontSize = rndFun(20, 30) + 'px';
+      b.style.left = '50%'; b.style.top = '52%';
+      layer.appendChild(b);
+      const ang = (i / N) * Math.PI * 2 + rndFun(-0.3, 0.3);
+      const dist = rndFun(W * 0.5, W * 0.9);
+      const ex = Math.cos(ang) * dist, ey = Math.sin(ang) * dist;
+      const wob = rndFun(18, 34) * (i % 2 ? 1 : -1);
+      b.animate([
+        { transform: 'translate(-50%,-50%) scale(0.4) rotate(0deg)', opacity: 0 },
+        { transform: `translate(calc(-50% + ${ex * 0.3}px), calc(-50% + ${ey * 0.3 - Math.abs(wob)}px)) scale(1) rotate(${wob}deg)`, opacity: 1, offset: 0.3 },
+        { transform: `translate(calc(-50% + ${ex * 0.6}px), calc(-50% + ${ey * 0.6 + Math.abs(wob)}px)) scale(1) rotate(${-wob}deg)`, opacity: 1, offset: 0.6 },
+        { transform: `translate(calc(-50% + ${ex}px), calc(-50% + ${ey - wob}px)) scale(0.9) rotate(${wob}deg)`, opacity: 0, offset: 1 }
+      ], { duration: DUR, delay: rndFun(0, 700), easing: 'ease-in-out', fill: 'forwards' });
+    }
+    return DUR + 700;
+  }
+
+  // 22) Rozpad a složení čísla – číslo se rozsype na kostičky a zase složí
+  function funNumberShatter(layer, face, W, H) {
+    const DUR = 3000;
+    const num = face.querySelector('.num');
+    if (num) {
+      num.animate([
+        { opacity: 1, offset: 0 }, { opacity: 0, offset: 0.13 },
+        { opacity: 0, offset: 0.62 }, { opacity: 1, offset: 0.72 }
+      ], { duration: DUR, easing: 'ease-in-out' });
+    }
+    const cols = ['#7C4DFF', '#00E5FF', '#FF4081'];
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('i');
+      p.className = 'fun-piece';
+      const s = rndFun(10, 18);
+      p.style.width = s + 'px'; p.style.height = s + 'px';
+      p.style.borderRadius = '4px';
+      p.style.background = cols[i % cols.length];
+      p.style.left = '50%'; p.style.top = '50%';
+      layer.appendChild(p);
+      const ang = rndFun(0, Math.PI * 2), dist = rndFun(W * 0.25, W * 0.5);
+      const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist, rot = rndFun(120, 480);
+      p.animate([
+        { transform: 'translate(-50%,-50%) scale(0.4)', opacity: 0, offset: 0 },
+        { transform: 'translate(-50%,-50%) scale(1)', opacity: 1, offset: 0.13 },
+        { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) rotate(${rot}deg) scale(1)`, opacity: 1, offset: 0.42 },
+        { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) rotate(${rot}deg) scale(1)`, opacity: 1, offset: 0.5 },
+        { transform: 'translate(-50%,-50%) rotate(0deg) scale(1)', opacity: 1, offset: 0.66 },
+        { transform: 'translate(-50%,-50%) scale(0.3)', opacity: 0, offset: 0.72 }
+      ], { duration: DUR, easing: 'ease-in-out', fill: 'forwards' });
+    }
+    return DUR;
+  }
+
+  // 23) Prskavka – jiskřící bod obkreslí "20", zlatá stopa dohoří
+  function funSparkler(layer, face, W, H) {
+    const pts = path20(W, H);
+    const N = pts.length;
+    const DRAW = 2800, BURN = 1700;
+    const DUR = DRAW + BURN;
+
+    // zlatá stopa – každý bod se rozsvítí, jak kolem projede jiskřící hlava,
+    // a po dokreslení postupně "dohořívá" od začátku ke konci
+    pts.forEach((p, i) => {
+      const t = document.createElement('i');
+      t.className = 'fun-dot';
+      t.style.width = t.style.height = '6px';
+      t.style.background = '#FFD54F';
+      t.style.boxShadow = '0 0 6px #FFB300';
+      t.style.left = p.x + 'px'; t.style.top = p.y + 'px';
+      layer.appendChild(t);
+      const appear = (i / N) * DRAW;            // kdy se bod rozsvítí
+      const burn   = DRAW + (i / N) * BURN;     // kdy začne dohořívat
+      const oAppear = appear / DUR;
+      const oLit    = Math.min(0.99, (appear + 120) / DUR);
+      const oBurn   = Math.min(0.995, burn / DUR);
+      const oGone   = Math.min(1, (burn + 240) / DUR);
+      t.animate([
+        { opacity: 0, transform: 'translate(-50%,-50%) scale(0.3)', offset: 0 },
+        { opacity: 0, transform: 'translate(-50%,-50%) scale(0.3)', offset: oAppear },
+        { opacity: 1, transform: 'translate(-50%,-50%) scale(1)',   offset: oLit },
+        { opacity: 1, transform: 'translate(-50%,-50%) scale(1)',   offset: oBurn },
+        { opacity: 0, transform: 'translate(-50%,-50%) scale(0.4)', offset: oGone },
+        { opacity: 0, offset: 1 }
+      ], { duration: DUR, easing: 'linear', fill: 'forwards' });
+    });
+
+    // jiskřící hlava – jasný bod, který obkresluje "20"
+    const head = document.createElement('i');
+    head.style.position = 'absolute';
+    head.style.width = head.style.height = '13px';
+    head.style.borderRadius = '50%';
+    head.style.background = 'radial-gradient(circle, #FFFDE7, #FFC107 55%, rgba(255,179,0,0))';
+    head.style.boxShadow = '0 0 14px 5px rgba(255,193,7,0.9)';
+    head.style.left = '0'; head.style.top = '0';
+    layer.appendChild(head);
+    head.animate(
+      pts.map((p, i) => ({ transform: `translate(${p.x}px, ${p.y}px) translate(-50%,-50%)`, offset: i / (N - 1) })),
+      { duration: DRAW, easing: 'linear', fill: 'forwards' }
+    );
+    head.animate([
+      { opacity: 0, offset: 0 }, { opacity: 1, offset: 0.04 },
+      { opacity: 1, offset: 0.94 }, { opacity: 0, offset: 1 }
+    ], { duration: DRAW, easing: 'linear', fill: 'forwards' });
+
+    let step = 0;
+    const timer = setInterval(() => {
+      if (step >= pts.length) { clearInterval(timer); return; }
+      const p = pts[step]; step++;
+      for (let j = 0; j < 3; j++) {
+        const s = document.createElement('i');
+        s.className = 'fun-dot';
+        const sz = rndFun(2, 5);
+        s.style.width = s.style.height = sz + 'px';
+        s.style.background = j % 2 ? '#FFF59D' : '#FF8F00';
+        s.style.left = p.x + 'px'; s.style.top = p.y + 'px';
+        layer.appendChild(s);
+        const ang = rndFun(0, Math.PI * 2), dist = rndFun(8, 26);
+        s.animate([
+          { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
+          { transform: `translate(calc(-50% + ${Math.cos(ang) * dist}px), calc(-50% + ${Math.sin(ang) * dist}px)) scale(0.2)`, opacity: 0 }
+        ], { duration: rndFun(400, 700), easing: 'ease-out', fill: 'forwards' });
+      }
+    }, DRAW / pts.length);
+    return DUR;
+  }
+
+  // 24) Trampolína – číslo pružně poskakuje se squash & stretch a "boing" jiskrami
+  function funTrampoline(layer, face, W, H) {
+    const DUR = 4200;
+    const num = face.querySelector('.num');
+    if (num) {
+      num.animate([
+        { transform: 'translateY(0) scale(1,1)', offset: 0 },
+        { transform: 'translateY(0) scale(1.25,0.7)', offset: 0.03 },
+        { transform: `translateY(${-H * 0.34}px) scale(0.85,1.2)`, offset: 0.11 },
+        { transform: 'translateY(0) scale(1.22,0.74)', offset: 0.19 },
+        { transform: `translateY(${-H * 0.27}px) scale(0.87,1.17)`, offset: 0.27 },
+        { transform: 'translateY(0) scale(1.2,0.77)', offset: 0.35 },
+        { transform: `translateY(${-H * 0.21}px) scale(0.89,1.14)`, offset: 0.43 },
+        { transform: 'translateY(0) scale(1.17,0.8)', offset: 0.51 },
+        { transform: `translateY(${-H * 0.15}px) scale(0.91,1.11)`, offset: 0.59 },
+        { transform: 'translateY(0) scale(1.14,0.83)', offset: 0.67 },
+        { transform: `translateY(${-H * 0.1}px) scale(0.93,1.08)`, offset: 0.74 },
+        { transform: 'translateY(0) scale(1.1,0.87)', offset: 0.81 },
+        { transform: `translateY(${-H * 0.05}px) scale(0.95,1.05)`, offset: 0.87 },
+        { transform: 'translateY(0) scale(1.06,0.93)', offset: 0.93 },
+        { transform: 'translateY(0) scale(1,1)', offset: 1 }
+      ], { duration: DUR, easing: 'ease-in-out' });
+    }
+    [0.19, 0.35, 0.51, 0.67, 0.81, 0.93].forEach((bt) => {
+      setTimeout(() => {
+        for (let i = 0; i < 6; i++) {
+          const s = document.createElement('span');
+          s.className = 'fun-spark';
+          s.textContent = '✨';
+          s.style.fontSize = rndFun(12, 18) + 'px';
+          s.style.left = '50%'; s.style.top = (H * 0.72) + 'px';
+          layer.appendChild(s);
+          const dx = rndFun(-W * 0.3, W * 0.3);
+          s.animate([
+            { transform: 'translate(-50%,-50%) scale(0.3)', opacity: 0 },
+            { transform: `translate(calc(-50% + ${dx}px), ${-H * 0.12}px) scale(1)`, opacity: 1, offset: 0.5 },
+            { transform: `translate(calc(-50% + ${dx * 1.3}px), 0) scale(0.5)`, opacity: 0 }
+          ], { duration: 700, easing: 'ease-out', fill: 'forwards' });
+        }
+      }, bt * DUR);
+    });
+    return DUR;
+  }
+
+  /* --- Rotace efektů: celkem 20 (fixní pořadí; náhodné pořadí přidáme až ve finální verzi) --- */
+  const FUN_ACTIONS = [
+    // Původní dvanáctka (1–12) – vrácena do rotace
+    funConfetti, funFirework, funSnail, funBalloons, funGift, funHearts,
+    funStarSwirl, funMonkey, funHeartGrow, funFootball, funBouquet, funGiftExplode,
+    // Zbývajících 8 ze sady 13–24
+    funCake, funChampagne, funUFO, funDisco, funNotes, funButterflies, funSparkler, funTrampoline
+  ];
+  /* Odebráno z rotace: funShootingStar (padající hvězda), funBubbles (mýdlové bubliny),
+     funMagicWand (kouzelná hůlka), funNumberShatter (rozpad čísla)
+     – funkce zůstávají definované výše, jen nejsou v rotaci. */
+
+  /* ---- Detail: zvětšená fotka / básnička ---- */
+  const lightbox = document.getElementById('lightbox');
+  const lightboxInner = document.getElementById('lightboxInner');
+
+  // aktuálně zobrazený detail (kvůli přepínání fotka ↔ básnička rohovou ikonkou)
+  let detailAge = null, detailType = 'photo', detailAccent = 'var(--c1)';
+
+  function openDetail(tile) {
+    const state = tile.dataset.state;
+    // stav "číslo" – zvětšený detail nemá smysl (otevře se až po otočení na fotku/básničku)
+    if (state !== 'photo' && state !== 'poem') return;
+    detailAge = parseInt(tile.dataset.age, 10);
+    detailAccent = tile.style.getPropertyValue('--tile-accent') || 'var(--c1)';
+    detailType = state;
+    renderDetail();
+    lightbox.hidden = false;
+  }
+
+  function renderDetail() {
+    const age = detailAge;
+    let content;
+    if (detailType === 'photo') {
+      content =
+        `<img class="lb-photo" src="${photoSrc(age)}" alt="Fotka – ${age} let"
+              onerror="this.outerHTML='<div class=&quot;lb-photo-missing&quot;><span style=&quot;font-size:2rem&quot;>📷</span>fotka (${age} let)<br>zatím chybí</div>'">`;
+    } else {
+      const text = (POEMS[age - 1] || '').trim();
+      const body = text
+        ? `<div class="lb-poem-text">${escapeHtml(text)}</div>`
+        : `<div class="lb-poem-text" style="opacity:.7">doplnit básničku</div>`;
+      content = `<div class="lb-poem" style="--tile-accent:${detailAccent}">${body}</div>`;
+    }
+    lightboxInner.innerHTML =
+      `<div class="lb-stage" style="--tile-accent:${detailAccent}">
+         ${content}
+         <button class="lb-rotate" type="button"
+                 aria-label="Přepnout detail (fotka ↔ básnička)"
+                 title="Přepnout na ${detailType === 'photo' ? 'básničku' : 'fotku'}">↻</button>
+       </div>`;
+    lightboxInner.querySelector('.lb-rotate').addEventListener('click', (e) => {
+      e.stopPropagation();
+      detailType = (detailType === 'photo') ? 'poem' : 'photo';
+      renderDetail();
+    });
+  }
+
+  function closeDetail() {
+    lightbox.hidden = true;
+    lightboxInner.innerHTML = '';
+  }
+
+  lightbox.addEventListener('click', (e) => {
+    // klik mimo fotku/básničku (na ztmavené pozadí) → zavřít
+    if (!e.target.closest('.lb-photo, .lb-poem')) closeDetail();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !lightbox.hidden) closeDetail();
+  });
+
+  /* ---- Klik na logo → obnovení stránky (návrat na úvodní pohled) ---- */
+  (function logoReset() {
+    const logo = document.getElementById('brandLogo');
+    logo.addEventListener('click', () => location.reload());
+    logo.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.reload(); }
+    });
+  })();
+
+  /* ---- Dekorativní pozadí: plovoucí tvary + glow + hvězdy ---- */
+  (function buildDecor() {
+    const decor = document.getElementById('bgDecor');
+    const stars = document.getElementById('starField');
+    const colors = ['var(--c1)', 'var(--c2)', 'var(--c3)'];
+    const rnd = (a, b) => a + Math.random() * (b - a);
+
+    // velké rozostřené glow kruhy
+    for (let i = 0; i < 4; i++) {
+      const g = document.createElement('div');
+      g.className = 'glow';
+      const size = rnd(180, 340);
+      g.style.width = g.style.height = size + 'px';
+      g.style.left = rnd(-5, 90) + '%';
+      g.style.top = rnd(-5, 85) + '%';
+      g.style.background = colors[i % 3];
+      g.style.animationDelay = rnd(0, 6) + 's';
+      decor.appendChild(g);
+    }
+
+    // plovoucí tvary (kolečka, hvězdičky, kosočtverce, streamery)
+    const kinds = ['circle', 'star', 'diamond', 'streamer'];
+    for (let i = 0; i < 26; i++) {
+      const s = document.createElement('div');
+      const kind = kinds[i % kinds.length];
+      s.className = 'shape ' + kind;
+      const col = colors[i % 3];
+      let w = rnd(8, 20);
+      s.style.background = col;
+      if (kind === 'circle')  { s.style.borderRadius = '50%'; s.style.width = w+'px'; s.style.height = w+'px'; }
+      if (kind === 'star')    { s.style.width = (w+6)+'px'; s.style.height = (w+6)+'px'; }
+      if (kind === 'diamond') { s.style.width = w+'px'; s.style.height = w+'px'; }
+      if (kind === 'streamer'){ s.style.width = rnd(4,7)+'px'; s.style.height = rnd(22,40)+'px'; s.style.opacity = 0.45; }
+      s.style.left = rnd(0, 100) + '%';
+      s.style.top = rnd(0, 100) + '%';
+      s.style.animationDuration = rnd(9, 20) + 's';
+      s.style.animationDelay = '-' + rnd(0, 12) + 's';
+      decor.appendChild(s);
+    }
+
+    // hvězdná obloha (viditelná jen v noci přes CSS proměnnou)
+    let html = '';
+    for (let i = 0; i < 70; i++) {
+      html += `<div class="twinkle" style="left:${rnd(0,100)}%;top:${rnd(0,100)}%;animation-delay:${rnd(0,3)}s"></div>`;
+    }
+    stars.innerHTML = html;
+  })();
+
+  /* ---- Ovladač hudby ---- */
+  (function musicCtrl() {
+    const box    = document.getElementById('music');
+    const audio  = document.getElementById('audio');
+    const toggle = document.getElementById('musicToggle');
+    const prevBtn= document.getElementById('musicPrev');
+    const nextBtn= document.getElementById('musicNext');
+    const nameEl = document.getElementById('musicName');
+    let idx = 0;
+
+    if (!TRACKS.length) {
+      box.dataset.disabled = 'true';
+      setName('Hudba (doplnit)');
+      return;
+    }
+    box.dataset.disabled = 'false';
+    load(0);   // po načtení aplikace vždy začínáme první skladbou
+
+    function load(i) {
+      idx = (i + TRACKS.length) % TRACKS.length;
+      audio.src = TRACKS[idx].src;
+      setName(TRACKS[idx].name || ('Skladba ' + (idx + 1)));
+    }
+
+    // vloží název do pevného okna a rozjede posun (marquee), když se nevejde
+    function setName(text) {
+      nameEl.classList.remove('scroll');
+      nameEl.innerHTML = '';
+      const inner = document.createElement('span');
+      inner.className = 'marquee-inner';
+      inner.textContent = text;
+      nameEl.appendChild(inner);
+      requestAnimationFrame(() => {
+        const overflow = inner.scrollWidth - nameEl.clientWidth;
+        // spustit posun i u těsných názvů (např. "8. Ruce nahoru"), kde by se
+        // jinak ořízlo poslední písmeno; malý buffer dá poslednímu znaku vzduch
+        if (overflow > 0) {
+          const shift = overflow + 6;
+          inner.style.setProperty('--shift', shift + 'px');
+          inner.style.setProperty('--dur', Math.max(6, shift / 22 + 5).toFixed(1) + 's');
+          nameEl.classList.add('scroll');
+        }
+      });
+    }
+
+    function play() { audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false)); }
+    function setPlaying(on) {
+      box.dataset.playing = on ? 'true' : 'false';
+      toggle.textContent = on ? '⏸' : '▶';
+    }
+    function skip(delta) {
+      const wasPlaying = !audio.paused;
+      load(idx + delta);
+      if (wasPlaying) play();
+    }
+
+    toggle.addEventListener('click', () => {
+      if (audio.paused) play(); else { audio.pause(); setPlaying(false); }
+    });
+    prevBtn.addEventListener('click', () => skip(-1));
+    nextBtn.addEventListener('click', () => skip(1));
+    // po dohrání skladby automaticky pustí další v pořadí
+    audio.addEventListener('ended', () => { load(idx + 1); play(); });
+  })();
+
+  /* ---- THEME TOGGLE (jedno tlačítko: auto → day → night → auto) ---- */
+  (function themeCtrl() {
+    const html    = document.documentElement;
+    const btn     = document.getElementById('themeToggle');
+    const iconEl  = document.getElementById('themeIcon');
+    const labelEl = document.getElementById('themeLabel');
+    const hintEl  = document.getElementById('themeHint');
+    const ORDER = ['auto', 'day', 'night'];
+    let mode = 'auto';
+
+    const isDayNow = () => { const h = new Date().getHours(); return h >= 6 && h < 19; };
+
+    function render() {
+      btn.dataset.mode = mode;
+      if (mode === 'auto') {
+        const day = isDayNow();
+        html.setAttribute('data-theme', day ? 'light' : 'dark');
+        iconEl.textContent = '◐'; labelEl.textContent = 'Auto';
+        hintEl.style.display = 'none';
+      } else if (mode === 'day') {
+        html.setAttribute('data-theme', 'light');
+        iconEl.textContent = '☀'; labelEl.textContent = 'Den'; hintEl.style.display = 'none';
+      } else {
+        html.setAttribute('data-theme', 'dark');
+        iconEl.textContent = '☾'; labelEl.textContent = 'Noc'; hintEl.style.display = 'none';
+      }
+    }
+    btn.addEventListener('click', () => {
+      mode = ORDER[(ORDER.indexOf(mode) + 1) % ORDER.length];
+      render();
+    });
+    render();
+    setInterval(() => { if (mode === 'auto') render(); }, 60000);
+  })();
+</script>
+
+</body>
+</html>
